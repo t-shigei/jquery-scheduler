@@ -14,7 +14,7 @@ $("#schedule").Scheduler({
 	height: 15,
 	width: 16,
 	data: [],
-	header:"ñºèÃ",
+	header:"title",
 	move:function(data){},
 	name_click:function(data,obj){},
 	data_click:function(data,obj){},
