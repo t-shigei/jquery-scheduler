@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+
+<title>Schedule</title>
+
+
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link   href="https://code.jquery.com/ui/1.12.1/themes/ui-darkness/jquery-ui.css"  rel="stylesheet"/>
+
+
+<script src="scheduler.js"        type="text/javascript" charset="utf-8"></script>
+<script src="sample-data.js"      type="text/javascript" charset="utf-8"></script>
+
+<style>
+ html,body{
+	 height:100%;
+	 background-color:black;
+	 color:white;
+ 
+ }
+ .schedule_names{
+   width:200px;
+ }
+ 
+ .schedule_sep{
+   width:10px;
+   background-color:gray;
+ }
+
+ .schedule_title{
+ }
+ 
+ .schedule_name{
+   cursor: pointer;
+   overflow:hidden;
+ }
+
+ .schedule_ym{
+   text-align: center;
+ }
+ 
+ .schedule_day{
+   text-align: center;
+ }
+ .schedule_current{
+   background: #FFFF00;
+   opacity: 0.6;
+ }
+ .schedule_sunday{
+   background:#fa9197;
+   opacity: 0.6;
+ }
+ 
+ .schedule_saturday{
+   background:#82c7ed;
+   opacity: 0.6;
+ }
+
+ .schedule_data{
+   cursor: pointer;
+   overflow:hidden;
+ }
+
+</style>
+
+<script>
+$(function(){
+		function formatD(ymd){
+            var d = new Date(ymd);
+        	return  d.getFullYear() +  "-" +
+        				('0' + (d.getMonth()+1)).slice(-2) + "-" +
+        				('0' + d.getDate()).slice(-2);
+        }
+
+      $("#schedule").Scheduler({
+           months: 2,
+           height: 15,
+           data: Sample_DATA,
+           move:function(data){
+               $.post("/schedule/save",{data:data},function(ret){
+                   $("#schedule").Scheduler("set_data",ret);
+               });
+           },
+           name_click:function(data,obj){
+                $(".schedule_edit :input").val("");
+               var self=this;
+               $.each(data,function(k,v){
+                 $(".schedule_edit :input[name="+k+"]").val(
+                     (k==="start_date" || k==="end_date") ?  formatD(v) : v);
+               });
+               
+               $(".schedule_edit").show();
+           },
+           data_click:function(data,obj){},
+           name_render:function(data,obj){
+               obj.html((data.start_date ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "" )+data.name);
+           },
+           data_render:function(data,obj){
+               obj.hover(function(e){
+                   $.each(data,function(k,v){
+                     $(".schedule_show ."+k+"").text(v);
+                   });
+                   $(".schedule_show").show();
+                    $(".schedule_show").offset({top:e.clientY-70,left:e.clientX+10});
+               }, function(e){
+                    $(".schedule_show").hide();
+               });
+           },
+      });  
+});
+</script>
+
+
+
+
+<script>
+$(function(){
+        $(".pre_month").click(function(){
+            $("#schedule").Scheduler("previous");
+            return false;
+        });
+        $(".next_month").click(function(){
+            $("#schedule").Scheduler("next");
+            return false;
+        });
+        $(".display_months").change(function(){
+            $("#schedule").Scheduler("set_months",$(this).val());
+            return false;
+        });
+        $(".schedule_refresh").click(function(){
+            $("#schedule").Scheduler("refresh");
+            return false;
+        });
+        $(".schedule_close").click(function(){
+            $(".schedule_edit").hide();
+            return false;
+        });
+        $(".schedule_save").click(function(){
+            var data = {};
+            $.each($(".schedule_edit").serializeArray(),function(i, obj){
+                data[obj.name] = obj.value;
+            });
+            $.post("/schedule/save",{data:data},function(ret){
+                $("#schedule").Scheduler("set_data",ret);
+            });
+            $(".schedule_edit").hide();
+            return false;
+        });
+});
+</script>
+
+
+</head>
+<body>
+<div>
+  <a href="" class="pre_month">◀前月</a>
+  <select class="display_months">
+    <option value="2">2か月</option>
+    <option value="3">3か月</option>
+    <option value="4">4か月</option>
+  </select>
+  <a href="" class="next_month">翌月▶</a>
+  <a href="" class="schedule_refresh">再描画</a>
+</div>
+<div id="schedule" style="height:80%;font-size:9px;"></div>
+
+<form class="schedule_edit" 
+    style="display:none;position:absolute;top:100px;left:200px;
+            border: 1px solid #000000;
+            background:black;
+            color:white;
+            padding: 0px 10px 10px 10px;">
+    <a href="" class="schedule_close" 
+       style="    color: red;
+        font-size: 15px;
+        text-decoration: none;
+        float: right;">×</a>
+    <hr style="clear:right;">
+    <div>id:<input type=text value="" name="id" /></div>
+    <div>name:<input type=text value="" name="name" style="width:300px;"/></div>
+    <div>from:<input type=date value="" name="start_date" />to:<input type=date value="" name="end_date" /></div>
+    <div>color:<input type=color value="" name="color" /></div>
+    <div>進捗:<input type=text value="" name="status" /></div>
+    <div><button class="schedule_save">保存</button></div>
+</form>
+
+
+<div class="schedule_show" 
+    style="display:none;position:absolute;top:100px;left:200px;
+            border: 1px solid #000000;
+            background:black;
+            color:white;
+            font-size: 9px;
+            padding: 0px 10px 10px 10px;">
+    <div>id:<span class="id"></span></div>
+    <div>name:<span class="name" style="width:300px;"></span></div>
+    <div>from:<span class="start_date"></span></div>
+    <div>to:<span class="end_date"></span></div>
+    <div>進捗:<span class="status"></span></div>
+</div>
+
+</body>
+</html>
