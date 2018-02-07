@@ -6,7 +6,9 @@ JQuer Plugin
 
 Drag&Drop  
 Resize  
-```
+
+
+```javascript
 $("#schedule").Scheduler({
 	months: 2,
 	height: 15,
