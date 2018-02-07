@@ -20,10 +20,15 @@
 	 height:100%;
 	 background-color:black;
 	 color:white;
- 
- }
+  }
+  
  .schedule_names{
    width:200px;
+ }
+ 
+ .schedule_name{
+   cursor: pointer;
+   overflow:hidden;
  }
  
  .schedule_sep{
@@ -34,22 +39,17 @@
  .schedule_title{
  }
  
- .schedule_name{
-   cursor: pointer;
-   overflow:hidden;
- }
-
  .schedule_ym{
-   text-align: center;
  }
  
  .schedule_day{
-   text-align: center;
  }
+ 
  .schedule_current{
    background: #FFFF00;
    opacity: 0.6;
  }
+ 
  .schedule_sunday{
    background:#fa9197;
    opacity: 0.6;
@@ -77,13 +77,14 @@ $(function(){
         }
 
       $("#schedule").Scheduler({
+           ym: new Date("2018-02-01"),
            months: 2,
            height: 15,
            data: Sample_DATA,
            move:function(data){
-               $.post("/schedule/save",{data:data},function(ret){
-                   $("#schedule").Scheduler("set_data",ret);
-               });
+               //$.post("/schedule/save",{data:data},function(ret){
+               //    $("#schedule").Scheduler("set_data",ret);
+               //});
            },
            name_click:function(data,obj){
                 $(".schedule_edit :input").val("");
@@ -102,10 +103,11 @@ $(function(){
            data_render:function(data,obj){
                obj.hover(function(e){
                    $.each(data,function(k,v){
+                     v = (k==="start_date" || k==="end_date") ?  formatD(v) : v;
                      $(".schedule_show ."+k+"").text(v);
                    });
                    $(".schedule_show").show();
-                    $(".schedule_show").offset({top:e.clientY-70,left:e.clientX+10});
+                   $(".schedule_show").offset({top:e.clientY-70,left:e.clientX+10});
                }, function(e){
                     $(".schedule_show").hide();
                });
@@ -119,34 +121,40 @@ $(function(){
 
 <script>
 $(function(){
+        //前月
         $(".pre_month").click(function(){
             $("#schedule").Scheduler("previous");
             return false;
         });
+        //翌月
         $(".next_month").click(function(){
             $("#schedule").Scheduler("next");
             return false;
         });
+        //月数
         $(".display_months").change(function(){
             $("#schedule").Scheduler("set_months",$(this).val());
             return false;
         });
+        //再表示
         $(".schedule_refresh").click(function(){
             $("#schedule").Scheduler("refresh");
             return false;
         });
+        //閉じる
         $(".schedule_close").click(function(){
             $(".schedule_edit").hide();
             return false;
         });
+        //保存
         $(".schedule_save").click(function(){
             var data = {};
             $.each($(".schedule_edit").serializeArray(),function(i, obj){
                 data[obj.name] = obj.value;
             });
-            $.post("/schedule/save",{data:data},function(ret){
-                $("#schedule").Scheduler("set_data",ret);
-            });
+            //$.post("/schedule/save",{data:data},function(ret){
+            //    $("#schedule").Scheduler("set_data",ret);
+            //});
             $(".schedule_edit").hide();
             return false;
         });
