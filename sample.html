@@ -30,7 +30,7 @@
    cursor: pointer;
    overflow:hidden;
  }
- 
+
  .schedule_sep{
    width:10px;
    background-color:gray;
@@ -39,9 +39,11 @@
  .schedule_title{
  }
  
+
  .schedule_ym{
  }
  
+ /*day color*/
  .schedule_day{
  }
  
@@ -60,6 +62,7 @@
    opacity: 0.6;
  }
 
+ /*schedule_rectangle*/
  .schedule_data{
    cursor: pointer;
    overflow:hidden;
@@ -69,12 +72,12 @@
 
 <script>
 $(function(){
-		function formatD(ymd){
+      function formatD(ymd){
             var d = new Date(ymd);
-        	return  d.getFullYear() +  "-" +
-        				('0' + (d.getMonth()+1)).slice(-2) + "-" +
-        				('0' + d.getDate()).slice(-2);
-        }
+            return  d.getFullYear() +  "-" +
+                        ('0' + (d.getMonth()+1)).slice(-2) + "-" +
+                        ('0' + d.getDate()).slice(-2);
+      }
 
       $("#schedule").Scheduler({
            ym: new Date("2018-02-01"),
@@ -176,17 +179,8 @@ $(function(){
 </div>
 <div id="schedule" style="height:80%;font-size:9px;"></div>
 
-<form class="schedule_edit" 
-    style="display:none;position:absolute;top:100px;left:200px;
-            border: 1px solid #000000;
-            background:black;
-            color:white;
-            padding: 0px 10px 10px 10px;">
-    <a href="" class="schedule_close" 
-       style="    color: red;
-        font-size: 15px;
-        text-decoration: none;
-        float: right;">×</a>
+<form class="schedule_edit" style="display:none;position:absolute;top:100px;left:200px;border: 1px solid #000000;background:black;color:white;padding: 0px 10px 10px 10px;">
+    <a href="" class="schedule_close" style="color: red;font-size: 15px;text-decoration: none;float: right;">×</a>
     <hr style="clear:right;">
     <div>id:<input type=text value="" name="id" /></div>
     <div>name:<input type=text value="" name="name" style="width:300px;"/></div>
@@ -198,12 +192,7 @@ $(function(){
 
 
 <div class="schedule_show" 
-    style="display:none;position:absolute;top:100px;left:200px;
-            border: 1px solid #000000;
-            background:black;
-            color:white;
-            font-size: 9px;
-            padding: 0px 10px 10px 10px;">
+    style="display:none;position:absolute;top:100px;left:200px;border: 1px solid #000000;background:black;color:white;font-size: 9px;padding: 0px 10px 10px 10px;">
     <div>id:<span class="id"></span></div>
     <div>name:<span class="name" style="width:300px;"></span></div>
     <div>from:<span class="start_date"></span></div>

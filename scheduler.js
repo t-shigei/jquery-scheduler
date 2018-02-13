@@ -81,13 +81,17 @@
                 //schedule_bodyとscrollの高さを変更
                 $(self.element).find(".schedule_day_pane").css("height",height);
                 $(self.element).find(".scroll_dummy").css("height",height+20);
+                $(self.element).find(".schedule_sep").height(height+self.settings.height*3);
+        
         
                 //heightの設定がある場合はScroll表示
-                if($(self.element).height()!==0){height=$(self.element).height();}
-        
-                $(self.element).find(".schedule_body").height(height);
-                $(self.element).find(".schedule_scroll").height(height);
-                $(self.element).find(".schedule_sep").height($(self.element).find(".schedule_header").height()+height);
+                if($(self.element).height()!==0){
+                    $(self.element).find(".schedule_body").height($(self.element).height());
+                    $(self.element).find(".schedule_scroll").height($(self.element).height());
+                    if($(self.element).height()<height){
+                        $(self.element).find(".schedule_sep").height($(self.element).height()+self.settings.height*3);
+                    }
+                }
         
                 setPosition($(".schedule_names").width());
             });
